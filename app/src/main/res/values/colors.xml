@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#1BB45E </color>
+    <color name="colorPrimaryDark">#06803B</color>
+    <color name="colorAccent">#06803B</color>
+    <color name="colorAccentOriginal">#84F0B4</color>
+
+    <color name="lightGray">#DEDEDE</color>
+    <color name="deleteRed">#E91818</color>
+    <color name="lighterGray">#F5F5F5</color>
+</resources>

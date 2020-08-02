@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.ComposeFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <TextView
+        android:id="@+id/tvComposeSelectBarcode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="16dp"
+        android:layout_toEndOf="@+id/ivComposeBarcode"
+        android:text="Select to scan Barcode" />
+
+    <ImageView
+        android:id="@+id/ivComposeBarcode"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="124dp"
+        android:layout_marginTop="16dp"
+        android:visibility="visible"
+        app:srcCompat="@drawable/ic_barcode_image" />
+
+    <EditText
+        android:id="@+id/etInventoryComposeName2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvComposeSelectBarcode"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_toStartOf="@+id/ivComposeFoodPic"
+        android:hint="Name" />
+
+    <EditText
+        android:id="@+id/etInvComposExp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/etInventoryComposeName2"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_toStartOf="@+id/ivComposeFoodPic"
+        android:hint="Expiration (MM/dd/yyyy)" />
+
+    <EditText
+        android:id="@+id/etInvComposAmountUnits"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/etInvComposExp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_toEndOf="@+id/etInvComposAmountNum"
+        android:hint="Units (g)" />
+
+    <EditText
+        android:id="@+id/etInvComposAmountNum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/etInvComposExp"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:hint="Amount (3)" />
+
+    <EditText
+        android:id="@+id/etInvComposDescript"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/etInvComposAmountUnits"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:hint="Description" />
+
+    <ImageView
+        android:id="@+id/ivComposeFoodPic"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:layout_below="@+id/tvComposeSelectBarcode"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:scaleType="centerInside"
+        android:visibility="visible"
+        app:srcCompat="@drawable/ic_image_placeholder3" />
+
+    <Button
+        android:id="@+id/btnAddInvItem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/etInvComposDescript"
+        android:layout_marginTop="16dp"
+        android:text="Add" />
+
+
+</RelativeLayout>

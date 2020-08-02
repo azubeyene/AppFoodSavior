@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigaation_view">
+
+    <group android:checkableBehavior="single">
+        <item android:id="@+id/nav_Settings"
+            android:icon="@drawable/ic_settings_black_24dp"
+            android:title="Settings"/>
+    </group>
+
+    <item android:title="Example Section">
+        <menu>
+            <item android:id="@+id/nav_example"
+                android:icon="@drawable/ic_add_black_24dp"
+                android:title="Example"/>
+        </menu>
+    </item>
+</menu>
