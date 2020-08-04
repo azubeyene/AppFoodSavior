@@ -13,10 +13,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".RecipeDetailsActivity"></activity>
-        <activity android:name=".CameraActivity" />
+        <activity android:name=".activities.ComposeGroceryActivity"></activity>
+        <activity android:name=".activities.ComposeInventoryActivity" />
+        <activity android:name=".activities.GroceryDetailsActivity" />
+        <activity android:name=".activities.RecipeDetailsActivity" />
+        <activity android:name=".activities.CameraActivity" />
         <activity
-            android:name=".InventoryDetailsActivity"
+            android:name=".activities.InventoryDetailsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <provider

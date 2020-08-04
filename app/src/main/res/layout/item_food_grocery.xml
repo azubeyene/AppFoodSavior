@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
+
     <ImageView
         android:id="@+id/ivGroceryFoodPic"
         android:layout_width="100dp"
@@ -29,7 +30,7 @@
         android:textSize="16sp" />
 
     <TextView
-        android:id="@+id/tvGroceryFoodStore"
+        android:id="@+id/tvGroceryFoodBrand"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvGroceryFoodName"
@@ -58,7 +59,7 @@
         android:layout_marginTop="4dp"
         android:layout_marginEnd="16dp"
         android:layout_toStartOf="@+id/ivGroceryFoodPic"
-        android:layout_toEndOf="@+id/tvGroceryFoodStore"
+        android:layout_toEndOf="@+id/tvGroceryFoodBrand"
         android:text="TextView"
         android:textSize="12sp" />
 
@@ -66,13 +67,36 @@
         android:id="@+id/tvGroceryDescript"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tvGroceryFoodStore"
+        android:layout_below="@+id/tvGroceryFoodBrand"
         android:layout_alignParentStart="true"
         android:layout_marginStart="16dp"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="16dp"
         android:layout_toStartOf="@+id/ivGroceryFoodPic"
-        android:text="TextView" />
+        android:text="TextView"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/tvGroceryBuyOn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvGroceryDescript"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:layout_toEndOf="@+id/tvGroceryPrice"
+        android:text="Buy June 30"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/tvGroceryPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvGroceryDescript"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"
+        android:text="$12.00"
+        android:textSize="12sp" />
 
 
 </RelativeLayout>

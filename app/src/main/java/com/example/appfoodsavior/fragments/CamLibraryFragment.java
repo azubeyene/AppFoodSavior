@@ -13,9 +13,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.appfoodsavior.CamLibraryAdapter;
-import com.example.appfoodsavior.GroceryFood;
-import com.example.appfoodsavior.InventoryFood;
+import com.example.appfoodsavior.adapters.CamLibraryAdapter;
+import com.example.appfoodsavior.parseitems.InventoryFood;
 import com.example.appfoodsavior.R;
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -32,6 +31,7 @@ public class CamLibraryFragment extends Fragment {
     public static final String TAG = "CamLibrarFragment";
     private RecyclerView rvLibraryPhotos;
     private List<String> photoUrlList;
+    private List<InventoryFood> inventoryFoodList2;
     private CamLibraryAdapter adapter;
 
     public CamLibraryFragment() {
@@ -52,7 +52,9 @@ public class CamLibraryFragment extends Fragment {
         //here we define a gridview recylcer view
         rvLibraryPhotos = view.findViewById(R.id.rvLibraryPhotos);
         photoUrlList = new ArrayList<>();
-        adapter = new CamLibraryAdapter(getContext(), photoUrlList);
+        inventoryFoodList2 = new ArrayList<>();
+
+        adapter = new CamLibraryAdapter(getContext(), inventoryFoodList2);
         rvLibraryPhotos.setAdapter(adapter);
         rvLibraryPhotos.setLayoutManager(new GridLayoutManager(getContext(), 3));
         queryPhotosInventory();
@@ -74,6 +76,7 @@ public class CamLibraryFragment extends Fragment {
                 for (InventoryFood inventoryFood: inventoryFoodList){
                     if (!inventoryFood.getPrevPhoto()){
                         photoUrlList.add(inventoryFood.getImage().getUrl());
+                        inventoryFoodList2.add(inventoryFood);
                     }
                 }
                 adapter.notifyDataSetChanged();

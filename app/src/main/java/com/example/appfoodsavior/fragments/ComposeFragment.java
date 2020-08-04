@@ -3,7 +3,6 @@
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -19,31 +18,44 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.CustomTarget;
-import com.bumptech.glide.request.transition.Transition;
-import com.example.appfoodsavior.CameraActivity;
-import com.example.appfoodsavior.InventoryFood;
+import com.example.appfoodsavior.activities.CameraActivity;
+import com.example.appfoodsavior.parseitems.InventoryFood;
 import com.example.appfoodsavior.R;
-import com.parse.Parse;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
 
  /**
  * A simple {@link Fragment} subclass.
  */
-public class ComposeFragment extends Fragment {
+
+ /*
+
+
+
+
+
+
+ FRAGMENT NO LONGER IN USE
+
+
+
+
+
+
+
+
+  */
+
+ public class ComposeFragment extends Fragment {
     public static final String TAG = "ComposeFragment";
     public static final int PHOTO_IMAGE_ACTIVITY_REQUEST_CODE = 90;
     private EditText etInventoryComposeName2;
@@ -54,7 +66,7 @@ public class ComposeFragment extends Fragment {
     private ImageView ivComposeFoodPic;
     private Button btnAddInvItem;
     private File photoFile;
-    private Bitmap photoBitMap;
+    private File photoFile2;
 
     public ComposeFragment() {
         // Required empty public constructor
@@ -125,10 +137,7 @@ public class ComposeFragment extends Fragment {
          inventoryFood.setUser(ParseUser.getCurrentUser());
          //Check if we take library photo or camera photo
          if (photoFile==null){
-             ByteArrayOutputStream stream = new ByteArrayOutputStream();
-             photoBitMap.compress(Bitmap.CompressFormat.PNG,100,stream);
-             byte[] byteArray = stream.toByteArray();
-             inventoryFood.setImage(new ParseFile("image.png",byteArray));
+             inventoryFood.setImage(new ParseFile(photoFile2));
              inventoryFood.setPrevPhoto(true);
          } else{
              inventoryFood.setImage(new ParseFile(photoFile));
@@ -176,7 +185,7 @@ public class ComposeFragment extends Fragment {
              Toast.makeText(getContext(), "Description required for food", Toast.LENGTH_SHORT).show();
              return true;
          }
-         if (photoFile==null && photoBitMap==null ||  ivComposeFoodPic.getDrawable()==null){
+         if (photoFile==null && photoFile2==null ||  ivComposeFoodPic.getDrawable()==null){
              Toast.makeText(getContext(), "Photo required for food", Toast.LENGTH_SHORT).show();
              return true;
          }
@@ -188,29 +197,21 @@ public class ComposeFragment extends Fragment {
          super.onActivityResult(requestCode, resultCode, data);
          if (requestCode==PHOTO_IMAGE_ACTIVITY_REQUEST_CODE){
              if (resultCode==RESULT_OK){//Retrive Photo then add to image view
-                 if (data.getExtras().get("photoUrl")!=null){
-                     //Glide.with(getContext()).load(data.getExtras().get("photoUrl")).into(ivComposeFoodPic);
-                     //Create bitmap then store it
-                     Glide.with(getContext()).load(data.getExtras().get("photoUrl")).into(ivComposeFoodPic);
-                     Glide.with(getContext()).asBitmap().load(data.getExtras().get("photoUrl")).into(new CustomTarget<Bitmap>() {
-                         @Override
-                         public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                             photoBitMap = resource;
-                         }
-                         @Override
-                         public void onLoadCleared(@Nullable Drawable placeholder) {
 
-                         }
-                     });
-                     //Next we delete top and add in like below
+                 if (data.getExtras().get("selectedPhotoFile")!=null){
+                     photoFile2 = (File) data.getExtras().get("selectedPhotoFile");
+                     Bitmap takenImage = BitmapFactory.decodeFile(photoFile2.getAbsolutePath());
+                     // RESIZE BITMAP, see section below
+                     // Load the taken image into a preview
+                     ivComposeFoodPic.setImageBitmap(takenImage);
                      photoFile = null;
+
                  } else {
                      photoFile = (File) data.getExtras().get("photoFile");
                      Bitmap takenImage = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
                      // RESIZE BITMAP, see section below
                      // Load the taken image into a preview
                      ivComposeFoodPic.setImageBitmap(takenImage);
-                     photoBitMap = null;
                  }
              }
          }

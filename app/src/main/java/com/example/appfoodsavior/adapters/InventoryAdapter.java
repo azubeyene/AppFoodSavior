@@ -1,4 +1,4 @@
-package com.example.appfoodsavior;
+package com.example.appfoodsavior.adapters;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,18 +9,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.appfoodsavior.R;
+import com.example.appfoodsavior.activities.InventoryDetailsActivity;
+import com.example.appfoodsavior.parseitems.InventoryFood;
 
 import org.json.JSONException;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.ViewHolder> {
@@ -62,7 +61,7 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.View
         private TextView tvInventoryFoodExp;
         private TextView tvInventoryAmount;
         private TextView tvInventoryDescript;
-        private TextView tvInventoryPrice;
+        private TextView tvInventoryCalories;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -72,7 +71,7 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.View
 
             tvInventoryAmount = itemView.findViewById(R.id.tvInventoryAmount);
             tvInventoryDescript = itemView.findViewById(R.id.tvInventoryDescript);
-            tvInventoryPrice = itemView.findViewById(R.id.tvInventoryPrice);
+            tvInventoryCalories = itemView.findViewById(R.id.tvInventoryCalories);
 
             itemView.setOnClickListener(this);
         }
@@ -83,8 +82,7 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.View
             tvInventoryFoodName.setText(inventoryFood.getName());
             tvInventoryFoodExp.setText(inventoryExpReformat(inventoryFood));
             tvInventoryDescript.setText(invetoryDescriptReformat(inventoryFood));
-            //tvInventoryPrice.setText(inventoryPriceReformat(inventoryFood));
-            tvInventoryPrice.setText("Cal. " + Integer.toString((int) inventoryFood.getCalories()));
+            tvInventoryCalories.setText("Cal. " + Integer.toString((int) inventoryFood.getCalories()));
 
             if (inventoryFood.getImage()!=null){
                 Glide.with(context).load(inventoryFood.getImage().getUrl()).into(ivInventoryFoodPic);

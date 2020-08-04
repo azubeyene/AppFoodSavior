@@ -13,8 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.appfoodsavior.R;
-import com.example.appfoodsavior.Recipe;
-import com.example.appfoodsavior.RecipesParentAdapter;
+import com.example.appfoodsavior.adapters.RecipesParentAdapter;
 
 import java.util.ArrayList;
 import java.util.List;

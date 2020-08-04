@@ -1,10 +1,12 @@
-package com.example.appfoodsavior;
+package com.example.appfoodsavior.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
 
+import com.example.appfoodsavior.PageAdapter;
+import com.example.appfoodsavior.R;
 import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 

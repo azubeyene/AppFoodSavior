@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     app:layout_constraintBottom_toTopOf="parent"
     android:orientation="vertical"
-    tools:context=".CameraActivity">
+    tools:context=".activities.CameraActivity">
 
     <com.google.android.material.tabs.TabLayout
         android:layout_width="match_parent"

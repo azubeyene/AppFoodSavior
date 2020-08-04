@@ -1,4 +1,4 @@
-package com.example.appfoodsavior;
+package com.example.appfoodsavior.parseitems;
 
 import com.parse.ParseClassName;
 import com.parse.ParseFile;

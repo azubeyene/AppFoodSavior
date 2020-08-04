@@ -1,10 +1,12 @@
-package com.example.appfoodsavior;
+package com.example.appfoodsavior.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.appfoodsavior.R;
 
 public class RecipeDetailsActivity extends AppCompatActivity {
     private ImageView ivRecipeDetailsPhoto;

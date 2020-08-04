@@ -1,4 +1,4 @@
-package com.example.appfoodsavior;
+package com.example.appfoodsavior.parseitems;
 
 import com.parse.ParseClassName;
 import com.parse.ParseFile;
@@ -18,11 +18,11 @@ public class InventoryFood extends ParseObject {
     public static final String KEY_IMAGE = "image";
     public static final String KEY_NAME = "name";
     public static final String KEY_EXPIRATION = "expiration";
+    public static final String KEY_DESCRIPTION = "description"; //String
     public static final String KEY_CREATED = "createdAt";
 
     public static final String KEY_AMOUNT = "amount"; //Array
     public static final String KEY_PRICE = "price"; //Number/double
-    public static final String KEY_DESCRIPTION = "description"; //String
     public static final String KEY_CALORIES = "calories"; //Number/double
     public static final String KEY_BRAND = "brand"; //String
     public static final String KEY_PREV_PHOTO = "previousPhoto"; //Boolean

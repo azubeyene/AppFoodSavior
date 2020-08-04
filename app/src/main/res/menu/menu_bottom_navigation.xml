@@ -13,11 +13,6 @@
         android:icon="@drawable/ic_grocery_list_icon_new"
         android:title="GroceryList"
         app:showAsAction="always" />
-    <item
-        android:id="@+id/action_compose"
-        android:icon="@android:drawable/ic_menu_edit"
-        android:title="Compose"
-        app:showAsAction="always" />
 
     <item
         android:id="@+id/action_recipe"

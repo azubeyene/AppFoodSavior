@@ -1,4 +1,4 @@
-package com.example.appfoodsavior;
+package com.example.appfoodsavior.adapters;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +12,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.appfoodsavior.R;
+import com.example.appfoodsavior.activities.RecipeDetailsActivity;
+import com.example.appfoodsavior.parseitems.Recipe;
 
 import java.util.List;
 
