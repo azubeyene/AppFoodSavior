@@ -365,6 +365,7 @@ public class InventoryFragment extends Fragment {
                 final MenuItem searchItem = item;
                 androidx.appcompat.widget.SearchView searchView = (androidx.appcompat.widget.SearchView) searchItem.getActionView();
                 searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
+                
                 searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
                     @Override
                     public boolean onQueryTextSubmit(String query) {
