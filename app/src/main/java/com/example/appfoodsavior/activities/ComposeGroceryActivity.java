@@ -45,6 +45,8 @@ public class ComposeGroceryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_compose_grocery);
+        //getActionBar().setTitle("Compose Grocery Item");
+        getSupportActionBar().setTitle("Compose Grocery Item");
 
         etGrocComposeName = findViewById(R.id.etGrocComposeName);
         etGrocComposBuyBy = findViewById(R.id.etGrocComposBuyBy);

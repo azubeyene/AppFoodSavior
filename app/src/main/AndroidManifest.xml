@@ -3,6 +3,10 @@
     package="com.example.appfoodsavior">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <!--Check out using camera2-->
+    <uses-feature android:name="android.hardware.camera"/>
+    <uses-feature android:name="android.hardware.camera.autofocus"/>
 
     <application
         android:name=".ParseApplication"
@@ -13,11 +17,17 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity android:name=".activities.CaptureBarcodeActivity"
+            android:screenOrientation="fullSensor"
+            android:stateNotNeeded="true"
+            android:windowSoftInputMode="stateAlwaysHidden"/>
         <activity android:name=".activities.ComposeGroceryActivity"></activity>
-        <activity android:name=".activities.ComposeInventoryActivity" />
-        <activity android:name=".activities.GroceryDetailsActivity" />
-        <activity android:name=".activities.RecipeDetailsActivity" />
+        <activity android:name=".activities.ComposeInventoryActivity"/>
         <activity android:name=".activities.CameraActivity" />
+        <activity android:name=".activities.GroceryDetailsActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".activities.RecipeDetailsActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".activities.InventoryDetailsActivity"
             android:theme="@style/AppTheme.NoActionBar" />

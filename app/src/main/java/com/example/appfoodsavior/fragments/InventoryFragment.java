@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -14,10 +15,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.SearchView;
 import android.widget.Toast;
 
+import com.example.appfoodsavior.MainActivity;
 import com.example.appfoodsavior.activities.ComposeInventoryActivity;
 import com.example.appfoodsavior.parseitems.GroceryFood;
 import com.example.appfoodsavior.adapters.InventoryAdapter;
@@ -50,13 +57,16 @@ import static android.app.Activity.RESULT_OK;
  */
 public class InventoryFragment extends Fragment {
     public static final String TAG = "InventoryFragment";
-    public static final int INVENTORY_CREATE__ACTIVITY_REQUEST_CODE = 78;
+    public static final int INVENTORY_CREATE_ACTIVITY_REQUEST_CODE = 78;
+    public static final int INVENTORY_DETAILS__ACTIVITY_REQUEST_CODE = 100;
+
     private RecyclerView rvInventoryFood;
     private List<InventoryFood> inventoryFoods;
     private InventoryAdapter adapter;
     private InventoryFood deletedItem;
     private InventoryFood movedItem;
     private FloatingActionButton floatingActionButton;
+    private androidx.appcompat.widget.Toolbar invToolbar;
 
 
     public InventoryFragment() {
@@ -68,6 +78,9 @@ public class InventoryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        //load tool bar
+        setHasOptionsMenu(true);
+
         return inflater.inflate(R.layout.fragment_inventory, container, false);
     }
 
@@ -87,7 +100,7 @@ public class InventoryFragment extends Fragment {
             public void onClick(View view) {
                 //Navigate to ComposeInventoryActivity; onActivity Result, manually insert
                 Intent i = new Intent(getContext(), ComposeInventoryActivity.class);
-                startActivityForResult(i, INVENTORY_CREATE__ACTIVITY_REQUEST_CODE);
+                startActivityForResult(i, INVENTORY_CREATE_ACTIVITY_REQUEST_CODE);
 
                 //Fragment fragment = new ComposeFragment();
                 //((MainActivity) getContext()).getSupportFragmentManager().beginTransaction().replace(R.id.flContainer, fragment).addToBackStack(null).commit();
@@ -113,58 +126,55 @@ public class InventoryFragment extends Fragment {
 
             switch (direction){
                 case ItemTouchHelper.LEFT:
+                    //We want to remove from list, but not from data base
                     final PreviousInventory previousInventory = new PreviousInventory();
                     deletedItem = inventoryFoods.get(position);
-                    deletedItem.deleteInBackground(new DeleteCallback() {
-                        @Override
-                        public void done(ParseException e) {
-                            inventoryFoods.remove(position);
-                            adapter.notifyItemRemoved(position);
-                            //Create previousInventory item
-                            try {
-                                copyOverPrevInv(deletedItem, previousInventory);
-                            } catch (JSONException ex) {
-                                ex.printStackTrace();
-                            } catch (ParseException ex) {
-                                ex.printStackTrace();
-                            }
-                            previousInventory.saveInBackground();
-                        }
-                    });
+                    inventoryFoods.remove(position);
+                    adapter.notifyItemRemoved(position);
 
-                    Snackbar.make(rvInventoryFood, "Deleted " + deletedItem.getName(), BaseTransientBottomBar.LENGTH_LONG).setAction("Undo", new View.OnClickListener() {
+                    Snackbar.make(rvInventoryFood, "Deleted " + deletedItem.getName(), BaseTransientBottomBar.LENGTH_LONG).addCallback(new Snackbar.Callback(){
+                        @Override
+                        public void onDismissed(Snackbar transientBottomBar, int event) {
+                            if (event == Snackbar.Callback.DISMISS_EVENT_TIMEOUT) {
+                                // Snackbar closed on its own
+                                //Delete the item from data base
+                                deletedItem.deleteInBackground(new DeleteCallback() {
+                                    @Override
+                                    public void done(ParseException e) {
+                                        //Create previousInventory item
+                                        Toast.makeText(getContext(), "Deleted from Parse", Toast.LENGTH_SHORT).show();
+                                        try {
+                                            copyOverPrevInv(deletedItem, previousInventory);
+                                        } catch (JSONException ex) {
+                                            ex.printStackTrace();
+                                        } catch (ParseException ex) {
+                                            ex.printStackTrace();
+                                        }
+                                        previousInventory.saveInBackground();
+                                    }
+                                });
+                            }
+                        }
+                    }).setAction("Undo", new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            final InventoryFood newInventoryItem = new InventoryFood();
-                            //Save Deleted Item
-                            try {
-                                copyOverInv(deletedItem, newInventoryItem);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            } catch (ParseException e) {
-                                e.printStackTrace();
+                            // Reinsert into list
+                            inventoryFoods.add(position, deletedItem);
+                            adapter.notifyItemInserted(position);
+                            if (position ==0){
+                                rvInventoryFood.smoothScrollToPosition(0);
                             }
-
-                            newInventoryItem.saveInBackground(new SaveCallback() {
+                            //Delete Prev item
+                            previousInventory.deleteInBackground(new DeleteCallback() {
                                 @Override
                                 public void done(ParseException e) {
-                                    inventoryFoods.add(position, deletedItem);
-                                    adapter.notifyItemInserted(position);
-                                    if (position ==0){
-                                        rvInventoryFood.smoothScrollToPosition(0);
-                                    }
-                                    //Delete Previous Item
-                                    previousInventory.deleteInBackground(new DeleteCallback() {
-                                        @Override
-                                        public void done(ParseException e) {
-                                            Toast.makeText(getContext(), "we deleted inventory item", Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
+                                    Toast.makeText(getContext(), "Deleted Prev Inv", Toast.LENGTH_SHORT).show();
                                 }
                             });
                         }
                     }).show();
                     break;
+
                 case ItemTouchHelper.RIGHT:
                     //TODO: Implement Snackbar like above
                     //We also need to delete it, then reinsert it
@@ -292,11 +302,10 @@ public class InventoryFragment extends Fragment {
         return;
     }
 
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode==INVENTORY_CREATE__ACTIVITY_REQUEST_CODE){
+        if (requestCode == INVENTORY_CREATE_ACTIVITY_REQUEST_CODE){
             if (resultCode==RESULT_OK){
                 //retrieve inventory item by Object ID
                 if (data.getStringExtra("inventoryFoodID")!=null){
@@ -311,7 +320,10 @@ public class InventoryFragment extends Fragment {
                         }
                     });
                 }
-
+            }
+        } else if (requestCode==INVENTORY_DETAILS__ACTIVITY_REQUEST_CODE){
+            if (resultCode==RESULT_OK){
+                //
             }
         }
     }
@@ -319,6 +331,7 @@ public class InventoryFragment extends Fragment {
     private void queryInventoryFood() {
         //TODO: make a query request
         ParseQuery<InventoryFood> query = ParseQuery.getQuery(InventoryFood.class);
+        query.whereEqualTo("user", ParseUser.getCurrentUser());
         query.include(InventoryFood.KEY_USER);
         query.setLimit(30);
         query.addDescendingOrder(InventoryFood.KEY_CREATED);
@@ -332,9 +345,48 @@ public class InventoryFragment extends Fragment {
                     return;
                 }
                 //All posts valid here
-                inventoryFoods.addAll(minventoryFoods);
-                adapter.notifyDataSetChanged();
+                //inventoryFoods.addAll(minventoryFoods);
+                adapter.addAll(minventoryFoods);
+                //adapter.notifyDataSetChanged();
             }
         });
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.inventory_fragment_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.inventory_search:
+                final MenuItem searchItem = item;
+                androidx.appcompat.widget.SearchView searchView = (androidx.appcompat.widget.SearchView) searchItem.getActionView();
+                searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
+                searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
+                    @Override
+                    public boolean onQueryTextSubmit(String query) {
+                        //Closes search on done
+                        searchItem.collapseActionView();
+                        return true;
+                    }
+                    @Override
+                    public boolean onQueryTextChange(String newText) {
+                        adapter.getFilter().filter(newText);
+                        return false;
+                    }
+
+                });
+                break;
+            case R.id.inventory_filter:
+                Toast.makeText(getContext(), "Filter", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.inventory_settings:
+                Toast.makeText(getContext(), "Settings", Toast.LENGTH_SHORT).show();
+                break;
+        }
+        return true;
     }
 }

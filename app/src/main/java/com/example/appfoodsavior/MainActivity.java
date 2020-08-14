@@ -1,6 +1,7 @@
 package com.example.appfoodsavior;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -10,8 +11,11 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.example.appfoodsavior.fragments.ComposeFragment;
@@ -23,20 +27,25 @@ import com.example.appfoodsavior.fragments.RecipesFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity {
     public static final String TAG = "MainActivity";
-    private DrawerLayout drawer;
+    public static final int INVENTORY_DETAILS__ACTIVITY_REQUEST_CODE = 100;
+    //codes for grocery and recipe fragments
+
+
+    public DrawerLayout drawer;
     private BottomNavigationView bottomNavigationView;
     private FrameLayout flContainer;
-    private Toolbar toolbar;
+    public Toolbar toolbar;
     final FragmentManager fragmentManager = getSupportFragmentManager();
-    public Fragment fragment;
+    public static Fragment fragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         toolbar = findViewById(R.id.toolbar_home);
+        toolbar.setTitle("Inventeory");
         setSupportActionBar(toolbar);
 
         drawer = findViewById(R.id.drawer_layout);
@@ -57,13 +66,12 @@ public class MainActivity extends AppCompatActivity{
                 return true;
             }
         });
-        bottomNavigationView = findViewById(R.id.bottomNavigation);
-        flContainer = findViewById(R.id.flContainer);
-
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
-        R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+
+        bottomNavigationView = findViewById(R.id.bottomNavigation);
+        flContainer = findViewById(R.id.flContainer);
 
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -72,20 +80,18 @@ public class MainActivity extends AppCompatActivity{
                 switch (menuItem.getItemId()) {
                     case R.id.action_recipe:
                         fragment = new RecipesFragment();
-                        getSupportActionBar().setTitle("Recipes");
+                        //getSupportActionBar().setTitle("Recipes");
+                        toolbar.setTitle("Recipes");
+
                         break;
                     case R.id.action_profile:
                         fragment = new ProfileFragment();
                         getSupportActionBar().setTitle("Profile");
                         break;
-                    /*case R.id.action_compose:
-                        fragment = new ComposeFragment();
-                        getSupportActionBar().setTitle("Compose");
-                        break;
-                     */
                     case R.id.action_inventory:
                         fragment = new InventoryFragment();
-                        getSupportActionBar().setTitle("Inventory");
+                        toolbar.setTitle("Inventory");
+                        //toolbar.inflateMenu(R.menu.inventory_fragment_menu);
                         break;
                     case R.id.action_grocery:
                         fragment = new GroceryFragment();
@@ -113,4 +119,5 @@ public class MainActivity extends AppCompatActivity{
             super.onBackPressed();
         }
     }
+
 }

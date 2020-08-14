@@ -7,6 +7,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -20,16 +22,19 @@ import com.example.appfoodsavior.parseitems.GroceryFood;
 
 import org.json.JSONException;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class GroceryAdapter extends RecyclerView.Adapter<GroceryAdapter.ViewHolder> {
+public class GroceryAdapter extends RecyclerView.Adapter<GroceryAdapter.ViewHolder> implements Filterable {
     public static final String TAG = "GroceryAdapter";
     private Context context;
     private List<GroceryFood> groceryFoods;
+    private List<GroceryFood> groceryFoodsFull;
 
     public GroceryAdapter(Context context, List<GroceryFood> groceryFoods) {
         this.context = context;
         this.groceryFoods = groceryFoods;
+        groceryFoodsFull = new ArrayList<>();
     }
 
     @NonNull
@@ -54,6 +59,48 @@ public class GroceryAdapter extends RecyclerView.Adapter<GroceryAdapter.ViewHold
         return groceryFoods.size();
     }
 
+
+
+    public void addAll(List<GroceryFood> mgroceryFoods){
+        groceryFoods.addAll(mgroceryFoods);
+        groceryFoodsFull.addAll(mgroceryFoods);
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public Filter getFilter() {
+        return groceryFilter;
+    }
+
+    private Filter groceryFilter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence charSequence) {
+            List<GroceryFood> filteredList = new ArrayList<>();
+            if (charSequence==null || charSequence.length()==0){
+                filteredList.addAll(groceryFoodsFull);
+                //Toast.makeText(context, Integer.toString(inventoryFoodsFull.size()), Toast.LENGTH_SHORT).show();
+            } else {
+                String filterPattern = charSequence.toString().toLowerCase().trim();
+                //Toast.makeText(context, filterPattern, Toast.LENGTH_SHORT).show();
+                for (GroceryFood food : groceryFoodsFull){
+                    if (food.getName().toLowerCase().contains(filterPattern)){
+                        filteredList.add(food);
+                    }
+                }
+            }
+            FilterResults results = new FilterResults();
+            results.values = filteredList;
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+            groceryFoods.clear();
+            groceryFoods.addAll((List) filterResults.values);
+            notifyDataSetChanged();
+        }
+    };
+
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private ImageView ivGroceryFoodPic;
         private TextView tvGroceryFoodName;
@@ -61,7 +108,9 @@ public class GroceryAdapter extends RecyclerView.Adapter<GroceryAdapter.ViewHold
         private TextView tvGroceryDescript;
         private TextView tvGroceryBuyOn;
         private TextView tvGroceryPrice;
-        private TextView tvGroceryAmount;
+        private TextView tvGroceryAmountNum;
+        private TextView tvGroceryAmountUnits;
+
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -72,7 +121,8 @@ public class GroceryAdapter extends RecyclerView.Adapter<GroceryAdapter.ViewHold
             tvGroceryDescript = itemView.findViewById(R.id.tvGroceryDescript);
             tvGroceryBuyOn = itemView.findViewById(R.id.tvGroceryBuyOn);
             tvGroceryPrice = itemView.findViewById(R.id.tvGroceryPrice);
-            tvGroceryAmount = itemView.findViewById(R.id.tvGroceryAmount);
+            tvGroceryAmountNum = itemView.findViewById(R.id.tvGroceryAmountNum);
+            tvGroceryAmountUnits = itemView.findViewById(R.id.tvGroceryAmountUnits);
             itemView.setOnClickListener(this);
         }
 
@@ -92,8 +142,8 @@ public class GroceryAdapter extends RecyclerView.Adapter<GroceryAdapter.ViewHold
             //Displaying food amount
             if (groceryFood.getAmount() !=null ){
                 Log.i(TAG, "This has time object");
-                String full_amount = groceryFood.getAmount().get(0) + " " + groceryFood.getAmount().get(1);
-                tvGroceryAmount.setText(full_amount);
+                tvGroceryAmountNum.setText(groceryFood.getAmount().get(0));
+                tvGroceryAmountUnits.setText(groceryFood.getAmount().get(1));
             }
 
         }
@@ -133,7 +183,7 @@ public class GroceryAdapter extends RecyclerView.Adapter<GroceryAdapter.ViewHold
             GroceryFood groceryFood = groceryFoods.get(getAdapterPosition());
 
             Intent i = new Intent(context, GroceryDetailsActivity.class);
-            i.putExtra("inventoryFoodID", groceryFood.getObjectId());
+            i.putExtra("groceryFoodID", groceryFood.getObjectId());
             //pass inventoryFood object ID and then query
             context.startActivity(i);
         }

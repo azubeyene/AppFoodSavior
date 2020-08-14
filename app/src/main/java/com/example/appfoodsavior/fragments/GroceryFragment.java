@@ -14,8 +14,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Toast;
 
 import com.example.appfoodsavior.activities.ComposeGroceryActivity;
@@ -64,6 +68,7 @@ public class GroceryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        setHasOptionsMenu(true);
         return inflater.inflate(R.layout.fragment_grocery, container, false);
     }
 
@@ -106,44 +111,30 @@ public class GroceryFragment extends Fragment {
             switch (direction){
                 case ItemTouchHelper.LEFT:
                     deletedItem = groceryFoods.get(position);
-                    deletedItem.deleteInBackground(new DeleteCallback() {
+                    groceryFoods.remove(position);
+                    adapter.notifyItemRemoved(position);
+
+                    Snackbar.make(rvGroceryFood, deletedItem.getName(), BaseTransientBottomBar.LENGTH_LONG).addCallback(new Snackbar.Callback(){
                         @Override
-                        public void done(ParseException e) {
-                            groceryFoods.remove(position);
-                            adapter.notifyItemRemoved(position);
+                        public void onDismissed(Snackbar transientBottomBar, int event) {
+                            if (event ==Snackbar.Callback.DISMISS_EVENT_TIMEOUT){
+                                deletedItem.deleteInBackground(new DeleteCallback() {
+                                    @Override
+                                    public void done(ParseException e) {
+                                        Toast.makeText(getContext(), "Deleted from Parse", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
                         }
-                    });
-
-
-                    Snackbar.make(rvGroceryFood, deletedItem.getName(), BaseTransientBottomBar.LENGTH_LONG).setAction("Undo", new View.OnClickListener() {
+                    }).setAction("Undo", new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             //Have to create new object with same attributes
-                            final GroceryFood groceryFood = new GroceryFood();
-
-                            try {
-                                if(copyOver(deletedItem, groceryFood)){
-                                    //if true, then there are issues
-                                    Toast.makeText(getContext(), "Error with copyOver", Toast.LENGTH_SHORT).show();
-                                    return;
-                                }
-                            } catch (ParseException e) {
-                                e.printStackTrace();
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                            groceryFoods.add(position, deletedItem);
+                            adapter.notifyItemInserted(position);
+                            if (position == 0){
+                                rvGroceryFood.smoothScrollToPosition(0);
                             }
-
-                            groceryFood.saveInBackground(new SaveCallback() {
-                                @Override
-                                public void done(ParseException e) {
-                                    groceryFoods.add(position, groceryFood);
-                                    adapter.notifyItemInserted(position);
-                                    if (position == 0){
-                                        rvGroceryFood.smoothScrollToPosition(0);
-                                    }
-                                }
-                            });
-
                         }
                     }).show();
                     break;
@@ -190,10 +181,10 @@ public class GroceryFragment extends Fragment {
         return false;
     }
 
-
     private void queryGroceryFoods() {
         //TODO: make a query request
         ParseQuery<GroceryFood> query = ParseQuery.getQuery(GroceryFood.class);
+        query.whereEqualTo("user", ParseUser.getCurrentUser());
         query.include(GroceryFood.KEY_USER);
         query.setLimit(30);
         query.addDescendingOrder(GroceryFood.KEY_CREATED);
@@ -207,8 +198,9 @@ public class GroceryFragment extends Fragment {
                     return;
                 }
                 //All posts valid here
-                groceryFoods.addAll(mgroceryFoods);
-                adapter.notifyDataSetChanged();
+                //groceryFoods.addAll(mgroceryFoods);
+                //adapter.notifyDataSetChanged();
+                adapter.addAll(mgroceryFoods);
             }
         });
     }
@@ -233,5 +225,48 @@ public class GroceryFragment extends Fragment {
 
             }
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.grocery_fragment_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.grocery_search:
+                final MenuItem searchItem = item;
+                androidx.appcompat.widget.SearchView searchView = (androidx.appcompat.widget.SearchView) searchItem.getActionView();
+                searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
+                searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
+                    @Override
+                    public boolean onQueryTextSubmit(String query) {
+                        //Closes search on done
+                        searchItem.collapseActionView();
+                        return true;
+                    }
+                    @Override
+                    public boolean onQueryTextChange(String newText) {
+                        adapter.getFilter().filter(newText);
+                        return false;
+                    }
+                });
+                break;
+
+            case R.id.grocery_filter:
+                openFilterDialog();
+                Toast.makeText(getContext(), "Filter", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.grocery_settings:
+                Toast.makeText(getContext(), "Settings", Toast.LENGTH_SHORT).show();
+                break;
+        }
+        return true;
+    }
+
+    private void openFilterDialog() {
+        //TODO: layout_filter_inventory; InvetoryFilterDialog implement
     }
 }

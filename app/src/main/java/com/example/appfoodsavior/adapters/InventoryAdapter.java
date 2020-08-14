@@ -7,29 +7,38 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.appfoodsavior.MainActivity;
 import com.example.appfoodsavior.R;
 import com.example.appfoodsavior.activities.InventoryDetailsActivity;
 import com.example.appfoodsavior.parseitems.InventoryFood;
 
 import org.json.JSONException;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.ViewHolder> {
+public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.ViewHolder> implements Filterable {
     public static final String TAG = "InventoryAdapter";
     private Context context;
     private List<InventoryFood> inventoryFoods;
+    private List<InventoryFood> inventoryFoodsFull;
 
     public InventoryAdapter(Context context, List<InventoryFood> inventoryFoods) {
         this.context = context;
         this.inventoryFoods = inventoryFoods;
+        inventoryFoodsFull = new ArrayList<>();
+        //inventoryFoodsFull.addAll(inventoryFoods);
     }
 
     @NonNull
@@ -47,12 +56,58 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.View
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
     }
 
     @Override
     public int getItemCount() {
         return inventoryFoods.size();
+    }
+
+    @Override
+    public Filter getFilter() {
+         return inventoryFilter;
+    }
+
+    private Filter inventoryFilter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence charSequence) {
+            List<InventoryFood> filteredList = new ArrayList<>();
+            if (charSequence==null || charSequence.length()==0){
+                filteredList.addAll(inventoryFoodsFull);
+                //Toast.makeText(context, Integer.toString(inventoryFoodsFull.size()), Toast.LENGTH_SHORT).show();
+            } else {
+                String filterPattern = charSequence.toString().toLowerCase().trim();
+                //Toast.makeText(context, filterPattern, Toast.LENGTH_SHORT).show();
+                for (InventoryFood food : inventoryFoodsFull){
+                    if (food.getName().toLowerCase().contains(filterPattern)){
+                        filteredList.add(food);
+                    }
+                }
+            }
+
+            FilterResults results = new FilterResults();
+            results.values = filteredList;
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+            inventoryFoods.clear();
+            inventoryFoods.addAll((List) filterResults.values);
+            notifyDataSetChanged();
+        }
+    };
+
+    //TODO: Implement the method below for filtering
+    //method here which takes in a few constraints on sort by [expiration (time-> milli seconds), calories, name]
+    //filter list will be equal to the order we want -> clear inventory Foods and
+
+    public void addAll(List<InventoryFood> list){
+        inventoryFoods.addAll(list);
+        inventoryFoodsFull.addAll(list);
+        //Log.i("InvetoryAdapter", "size of inventroy: " + inventoryFoods.size());
+        //Log.i("InvetoryAdapter", "size of full: " + inventoryFoodsFull.size());
+        notifyDataSetChanged();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

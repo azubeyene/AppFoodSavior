@@ -27,7 +27,7 @@
         android:layout_marginStart="124dp"
         android:layout_marginTop="16dp"
         android:visibility="visible"
-        app:srcCompat="@drawable/ic_barcode_image" />
+        app:srcCompat="@drawable/baseline_qr_code_scanner_black_18dp" />
 
     <EditText
         android:id="@+id/etInventoryComposeName2"

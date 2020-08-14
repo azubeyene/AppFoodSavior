@@ -6,77 +6,123 @@
     android:layout_height="match_parent"
     tools:context=".activities.InventoryDetailsActivity">
 
-    <ImageView
-        android:id="@+id/ivInventoryDetails"
+    <androidx.appcompat.widget.Toolbar
         android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:scaleType="centerCrop"
-        tools:srcCompat="@tools:sample/avatars" />
+        android:layout_height="?actionBarSize"
+        android:background="@color/colorPrimary"
+        android:id="@+id/toolbar_inventory_details"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        android:elevation="8dp"></androidx.appcompat.widget.Toolbar>
 
-    <EditText
-        android:id="@+id/etInvDetailsName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/ivInventoryDetails"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_toStartOf="@+id/btnInvDetDone"
-        android:ems="5"
-        android:text="Name"
-        android:textSize="20sp" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar_inventory_details">
 
-    <Button
-        android:id="@+id/btnInvDetDone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/ivInventoryDetails"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:text="Done" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/etInvDetExp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/etInvDetailsName"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:layout_toStartOf="@+id/etInvDetAmount"
-        android:ems="5"
-        android:inputType="textPersonName"
-        android:text="Expiration"
-        android:textSize="16sp" />
+            <ImageView
+                android:id="@+id/ivInventoryDetails"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:scaleType="centerCrop"
+                tools:srcCompat="@tools:sample/avatars" />
 
-    <EditText
-        android:id="@+id/etInvDetAmount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/etInvDetailsName"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:ems="5"
-        android:inputType="textPersonName"
-        android:text="Amount"
-        android:textSize="16sp" />
+            <EditText
+                android:id="@+id/etInvDetailsName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/ivInventoryDetails"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:text="Name"
+                android:textSize="20sp" />
 
-    <EditText
-        android:id="@+id/etInvDetDescrip"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/etInvDetExp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:ems="10"
-        android:inputType="textMultiLine"
-        android:text="Description" />
+            <EditText
+                android:id="@+id/etInvDetailsBrand"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/ivInventoryDetails"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_toEndOf="@+id/etInvDetailsName"
+                android:ellipsize="end"
+
+                android:maxLines="1"
+                android:text="Brand"
+                android:textSize="20sp" />
+
+            <EditText
+                android:id="@+id/etInvDetAmountUnits"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/etInvDetailsName"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_toEndOf="@+id/etInvDetAmountNum"
+                android:inputType="textPersonName"
+                android:text="Units"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/etInvDetAmountNum"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/etInvDetailsName"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_toEndOf="@+id/tvInvDetExp"
+                android:inputType="textPersonName"
+                android:text="3"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/etInvDetDescrip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvInvDetExp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="16dp"
+                android:inputType="textMultiLine"
+                android:text="Description" />
+
+            <EditText
+                android:id="@+id/etInvDetPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/etInvDetDescrip"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:inputType="textMultiLine"
+                android:text="Price" />
+
+            <TextView
+                android:id="@+id/tvInvDetExp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/etInvDetailsName"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:lines="1"
+                android:maxLines="1"
+                android:padding="8dp"
+                android:text="Expiration"
+                android:textColor="@color/common_google_signin_btn_text_dark_focused"
+                android:textSize="18sp" />
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+
 
 </RelativeLayout>

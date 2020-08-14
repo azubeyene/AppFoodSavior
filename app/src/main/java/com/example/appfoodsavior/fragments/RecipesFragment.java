@@ -9,8 +9,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.Toast;
 
 import com.example.appfoodsavior.R;
 import com.example.appfoodsavior.adapters.RecipesParentAdapter;
@@ -36,6 +41,7 @@ public class RecipesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        setHasOptionsMenu(true);
         return inflater.inflate(R.layout.fragment_recipes, container, false);
     }
 
@@ -64,7 +70,21 @@ public class RecipesFragment extends Fragment {
 
         //notify dataset change on adapter
         adapter.notifyDataSetChanged();
+    }
 
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.recipes_fragment_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.recipes_settings:
+                Toast.makeText(getContext(), "Settings", Toast.LENGTH_SHORT).show();
+                break;
+        }
+        return true;
     }
 }

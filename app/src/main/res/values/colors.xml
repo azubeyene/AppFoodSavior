@@ -5,7 +5,15 @@
     <color name="colorAccent">#06803B</color>
     <color name="colorAccentOriginal">#84F0B4</color>
 
+
     <color name="lightGray">#DEDEDE</color>
     <color name="deleteRed">#E91818</color>
     <color name="lighterGray">#F5F5F5</color>
+
+    <color name="darkLime">#92cc28</color>
+    <color name="mildLime">#b5ed57</color>
+    <color name="lightLime">#e3fe7f</color>
+    <color name="mildOrange">#ffa33f</color>
+    <color name="darkOrange">#f78815</color>
+
 </resources>

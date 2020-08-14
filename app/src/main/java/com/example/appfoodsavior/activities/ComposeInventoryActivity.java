@@ -1,8 +1,11 @@
 package com.example.appfoodsavior.activities;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -10,12 +13,16 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.appfoodsavior.parseitems.InventoryFood;
 import com.example.appfoodsavior.R;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
@@ -26,9 +33,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class ComposeInventoryActivity extends AppCompatActivity {
+public class ComposeInventoryActivity extends AppCompatActivity{
     public static final String TAG = "ComposeInventory";
     public static final int PHOTO_IMAGE_ACTIVITY_REQUEST_CODE = 88;
+    //public static final int BARCODE_SCANNER_ACTIVITY_REQUEST_CODE = 101;
+    private TextView tvComposeSelectBarcode;
     private EditText etInventoryComposeName2;
     private EditText etInvComposExp;
     private EditText etInvComposAmountNum;
@@ -44,6 +53,7 @@ public class ComposeInventoryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_compose_inventory);
+        getSupportActionBar().setTitle("Compose Inventory Item");
 
         etInventoryComposeName2 = findViewById(R.id.etInventoryComposeName2);
         etInvComposExp = findViewById(R.id.etInvComposExp);
@@ -51,9 +61,17 @@ public class ComposeInventoryActivity extends AppCompatActivity {
         etInvComposAmountUnits = findViewById(R.id.etInvComposAmountUnits);
         etInvComposDescript = findViewById(R.id.etInvComposDescript);
         etInvComposBrand = findViewById(R.id.etInvComposBrand);
+        tvComposeSelectBarcode = findViewById(R.id.tvComposeSelectBarcode);
 
         ivComposeFoodPic = findViewById(R.id.ivComposeFoodPic);
         btnAddInvItem = findViewById(R.id.btnAddInvItem);
+
+        tvComposeSelectBarcode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                scanCode();
+            }
+        });
 
         btnAddInvItem.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -128,7 +146,6 @@ public class ComposeInventoryActivity extends AppCompatActivity {
                 etInvComposDescript.setText("");
                 etInvComposBrand.setText("");
                 ivComposeFoodPic.setImageResource(R.drawable.ic_camera_icon_filler);
-
                 (ComposeInventoryActivity.this).finish();
             }
         });
@@ -167,6 +184,21 @@ public class ComposeInventoryActivity extends AppCompatActivity {
         return false;
     }
 
+    private void scanCode() {
+        //Scanner code courtesy of E.A.Y Teams
+        //Tutorial at https://www.youtube.com/watch?v=wfucGSKngq4
+        IntentIntegrator integrator = new IntentIntegrator(this);
+        integrator.setCaptureActivity(CaptureBarcodeActivity.class);
+        integrator.setOrientationLocked(false);
+        integrator.setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES);
+        integrator.setPrompt("Scanning...");
+        integrator.initiateScan();
+    }
+
+    private void autoFillInfo(String barcodeResult) {
+        //Barcode API call and for each field, set text
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -189,6 +221,39 @@ public class ComposeInventoryActivity extends AppCompatActivity {
                     // Load the taken image into a preview
                     ivComposeFoodPic.setImageBitmap(takenImage);
                 }
+            }
+        } else {
+            final IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+            if (result!=null){
+                if (result.getContents()!=null){
+                    //TODO: Take result.getContents and feed it to the Barcode searching up API
+                    //This is when we've already recieved the message
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setMessage(result.getContents());
+                    builder.setTitle("Is this correct?");
+                    builder.setPositiveButton("Scanning Again", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            scanCode();
+                        }
+                    }).setNegativeButton("Finished", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            //We dont just finish activity, use the barcode
+                            autoFillInfo(result.getContents());
+                            //finish(); navigates to main fragment
+                            //finish(); navigates to main fragment
+                        }
+                    });
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                } else {
+                    Toast.makeText(this, "No Results", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                //Not sure what this does. Remove and observe result
+
+                super.onActivityResult(requestCode, resultCode, data);
             }
         }
     }
